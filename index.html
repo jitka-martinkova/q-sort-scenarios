@@ -2,47 +2,44 @@
 <html lang="cs">
 <head>
   <meta charset="UTF-8" />
-  <title>Q-sort – scénáře</title>
+  <title>Q-sort – Bariéry práce se scénáři</title>
   <style>
     body {
-font-family: Arial, sans-serif;
-background: #f5f5f5;
-margin: 0;
-padding: 0;
-overflow-x: hidden;
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      margin: 0;
+      padding: 0;
       text-align: center;
     }
-    h1 { color: #333; }
-    .consent-box {
-      background: white;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      max-width: 700px;
+
+    h1, h2 {
+      color: #333;
+    }
+
+    #main {
+      width: 95%;
+      max-width: 1400px;
       margin: 20px auto;
       text-align: left;
     }
-    .consent-box h1 {
-      text-align: center;
+
+    .section {
+      background: #ffffff;
+      padding: 15px 20px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 6px rgba(0,0,0,0.08);
     }
-    .consent-actions {
-      text-align: center;
-      margin-top: 15px;
-    }
-    #main {
- width: 100%;
-  max-width: 1600px;
-  margin: 0 auto;
-  padding: 20px;
-    }
+
     #participantRow {
-      margin-top: 10px;
-      text-align: left;
+      margin-bottom: 15px;
     }
+
     #participantRow label {
       font-size: 14px;
       margin-right: 8px;
     }
+
     #participantId {
       padding: 4px 8px;
       font-size: 14px;
@@ -50,22 +47,32 @@ overflow-x: hidden;
       border: 1px solid #aaa;
     }
 
-    /* ZÁSOBNÍK – TŘI BOXY PŘES CELOU ŠÍŘKU */
+    #consentLabel {
+      font-size: 14px;
+    }
+
+    #consentCheckbox {
+      margin-right: 6px;
+    }
+
+    /* TŘÍDICÍ „PARKOVIŠTĚ“ – TŘI BOXY */
     #statements {
- display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  width: 100%;
-  margin-top: 20px;
+      display: flex;
+      flex-direction: row;
+      gap: 12px;
+      justify-content: space-between;
+      margin-top: 10px;
       padding: 10px;
       border-radius: 8px;
       background: #ffffff;
-      box-shadow: 0 0 6px rgba(0,0,0,0.08);
-
+      box-shadow: 0 0 6px rgba(0,0,0,0.05);
+      box-sizing: border-box;
+      width: 100%;
     }
+
     .bucket {
       flex: 1;
-      min-width: 0; /* aby flex správně roztáhl všechny tři */
+      min-width: 0;
       min-height: 80px;
       border-radius: 6px;
       border: 1px dashed #bbb;
@@ -74,7 +81,9 @@ overflow-x: hidden;
       display: flex;
       flex-direction: column;
       align-items: stretch;
+      box-sizing: border-box;
     }
+
     .bucket-title {
       font-weight: bold;
       font-size: 13px;
@@ -91,27 +100,29 @@ overflow-x: hidden;
       cursor: grab;
       font-size: 12px;
       text-align: left;
-      width: 100%;            /* vyplní celou šířku bucketu */
-      box-sizing: border-box; /* včetně paddingu */
+      width: 100%;
+      box-sizing: border-box;
     }
 
-    /* WRAPPER S HORIZONTÁLNÍM SCROLLEM */
+    /* GRID PRO Q-SORT – 95% ŠÍŘKY, BEZ MEZER MEZI BUŇKAMI */
     #gridWrapper {
       overflow-x: auto;
-      margin-top: 30px;
-      padding: 0 10px 10px;
+      margin-top: 20px;
+      padding-bottom: 10px;
+      width: 100%;
     }
+
     .grid {
-        display: flex;
-  justify-content: space-between;
-  width: 100%;
-  margin-top: 30px;
+      display: inline-flex;
+      justify-content: flex-start;
+      width: max-content; /* přizpůsobí se sloupcům, ale celé je v #gridWrapper */
     }
+
     .column {
       display: flex;
       flex-direction: column;
       align-items: center;
-      margin: 0 5px;
+      margin: 0; /* žádné mezery mezi sloupci */
     }
 
     .col-header {
@@ -119,26 +130,28 @@ overflow-x: hidden;
       flex-direction: column;
       align-items: center;
       justify-content: flex-end;
-      min-height: 60px; /* stejné pro všechny sloupce → zarovnání */
-      margin-bottom: 5px;
+      min-height: 60px;
+      margin-bottom: 0;
     }
+
     .column-label {
       font-weight: bold;
       margin-top: 2px;
     }
+
     .col-desc {
       font-size: 11px;
       text-align: center;
-      max-width: 140px;
+      max-width: 130px;
       line-height: 1.2;
     }
 
     .slot {
-      width: 140px;
-      height: 80px;
-      border: 1px dashed #aaa;
-      margin: 0px;
-      border-radius: 0px;
+      width: 130px;          /* mírně užší */
+      height: 65px;
+      border: 1px solid #aaa;
+      margin: 0;             /* žádný margin = přiléhat k sobě */
+      border-radius: 0;
       font-size: 11px;
       overflow: hidden;
       display: flex;
@@ -146,6 +159,7 @@ overflow-x: hidden;
       justify-content: center;
       text-align: left;
       padding: 2px;
+      box-sizing: border-box;
     }
 
     #submitBtn {
@@ -158,27 +172,29 @@ overflow-x: hidden;
       cursor: pointer;
       font-size: 15px;
     }
+
     #submitBtn:hover { background: #45a049; }
+
     #submitBtn:disabled {
       opacity: 0.6;
       cursor: default;
     }
+
+    #opportunities {
+      width: 100%;
+      min-height: 100px;
+      box-sizing: border-box;
+      padding: 8px;
+      font-size: 13px;
+      border-radius: 4px;
+      border: 1px solid #aaa;
+      resize: vertical;
+    }
   </style>
 </head>
 <body>
-  <div id="consent" class="consent-box">
-    <h1>Informovaný souhlas</h1>
-    <p>
-      Účastí v tomto výzkumu souhlasíte s tím, že vaše odpovědi budou anonymně uloženy
-      a použity pro výzkumné účely. Místo jména prosím použijte anonymní ID (např. P01).
-    </p>
-    <label><input type="checkbox" id="consentCheck"> Souhlasím s účastí a zpracováním dat.</label><br><br>
-    <div class="consent-actions">
-      <button onclick="start()">Pokračovat</button>
-    </div>
-  </div>
-
-  <div id="main" style="display:none;">
+  <div id="main">
+    <!-- Hlava stránky + ID respondenta -->
     <h1>Q-sort: Bariéry práce se scénáři</h1>
 
     <div id="participantRow">
@@ -186,77 +202,103 @@ overflow-x: hidden;
       <input type="text" id="participantId" placeholder="P01">
     </div>
 
-    <!-- TŘI PŘEDTŘÍDICÍ BOXY -->
-    <div id="statements">
-      <div class="bucket" id="bucket1">
-        <div class="bucket-title">Spíše nesouhlasím</div>
-      </div>
-      <div class="bucket" id="bucket2">
-        <div class="bucket-title">Spíše neutrální</div>
-      </div>
-      <div class="bucket" id="bucket3">
-        <div class="bucket-title">Spíše souhlasím</div>
-      </div>
+    <!-- 1) INFORMOVANÝ SOUHLAS -->
+    <div class="section" id="section-consent">
+      <h2>1) Informovaný souhlas</h2>
+      <p id="consentText">
+        Potvrďte prosím, že jste se seznámil/a s dokumentem obsahujícím informovaný souhlas
+        k tomuto výzkumu a souhlasíte s účastí.
+      </p>
+      <label id="consentLabel">
+        <input type="checkbox" id="consentCheckbox">
+        Potvrzuji, že jsem četl/a dokument s informovaným souhlasem, a vyjadřuji s tímto dokumentem svůj souhlas.
+      </label>
     </div>
 
-    <!-- MŘÍŽKA V HORIZONTÁLNĚ POSUVNÉM WRAPPERU -->
-    <div id="gridWrapper">
-      <div class="grid" id="qgrid"></div>
+    <!-- 2) Q-TŘÍDĚNÍ -->
+    <div class="section" id="section-qsort">
+      <h2>2) Q-třídění</h2>
+      <p>
+        V horním bloku můžete výroky nejprve přibližně roztřídit do tří skupin
+        (spíše nesouhlasím, spíše neutrální, spíše souhlasím). Poté prosím
+        přetáhněte všechny výroky do mřížky níže a rozmístěte je podle míry souhlasu
+        od nejméně po nejvíce souhlasné.
+      </p>
+
+      <!-- TŘI PŘEDTŘÍDICÍ BOXY -->
+      <div id="statements">
+        <div class="bucket" id="bucket1">
+          <div class="bucket-title">Spíše nesouhlasím</div>
+        </div>
+        <div class="bucket" id="bucket2">
+          <div class="bucket-title">Spíše neutrální</div>
+        </div>
+        <div class="bucket" id="bucket3">
+          <div class="bucket-title">Spíše souhlasím</div>
+        </div>
+      </div>
+
+      <!-- GRID PRO Q-SORT -->
+      <div id="gridWrapper">
+        <div class="grid" id="qgrid"></div>
+      </div>
+
+      <button id="submitBtn" onclick="submitData()">Odeslat můj Q-sort</button>
     </div>
 
-    <button id="submitBtn" onclick="submitData()">Odeslat můj Q-sort</button>
+    <!-- 3) PŘÍLEŽITOSTI -->
+    <div class="section" id="section-opportunities">
+      <h2>3) Příležitosti</h2>
+      <p>
+        Ve zkratce prosím popište, jaké vidíte příležitosti k překonání výše diskutovaných bariér
+        ve svém působišti nebo kontextu:
+      </p>
+      <textarea id="opportunities" placeholder="Vaše odpověď (nepovinné, ale vítané)..."></textarea>
+    </div>
   </div>
 
   <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzlUdMls5MQgXGxQVEhGikBHE4OouykPgn3M6BydCwVQkrQtmTaK8XH35fZVoUhGF5I/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxQ4UMNSMGjfUM8EJBA1SGlvakxk_RKEzxEopXB2BJ6a_KLUQ1g4Se7jd5VB0_nyyMW/exec"; // ← sem vlož URL webové aplikace z Apps Scriptu
 
-    // 26 výroků
+    // 22 výroků
     const statements = [
       "Q1: Absence dedikovaných institucionálních kapacit omezuje využívání scénářů.",
       "Q2: Nedostatek koordinace mezi sektory a institucemi omezuje práci se scénáři socio-ekonomického vývoje.",
-      "Q3: Nedostatek pobídek pro zapojení tvůrců politik omezuje využívání scénářů.",
-      "Q4: Nedostatek podmínek pro dlouhodobý, adaptabilní a flexibilní proces brání efektivnímu využití scénářů.",
-      "Q5: Nedostatek systematické finanční podpory brání rozvoji a využívání scénářů.",
-      "Q6: Scénáře jsou považovány za irelevantní, pokud nepřinášejí nové nebo užitečné poznatky.",
-      "Q7: Nedůvěra vůči scénářům, jejich metodám, obsahu či hodnotovým rámcům omezuje jejich využití.",
-      "Q8: Nízké povědomí mezi tvůrci politik omezuje využívání scénářů.",
-      "Q9: Nedostatek časových kapacit brání pracovníkům využívat scénáře.",
-      "Q10: Nedostatek dovedností a zkušeností s plánováním podle scénářů brání jejich využití.",
-      "Q11: Nedostatek finančních zdrojů brání efektivnímu využívání scénářů.",
-      "Q12: Nedostatek kvalitních dat omezuje tvorbu a použitelnost scénářů.",
-      "Q13: Nízká motivace a angažovanost pracovníků snižují využívání scénářů.",
-      "Q14: VYHODIT JEDNO POLE....",
-      "Q15: Nedostatečné školení a informační podpora snižují schopnost pracovat se scénáři.",
-      "Q16: Nekompatibilní časové horizonty scénářů a institucí ztěžují jejich praktické využití.",
-      "Q17: Nettransparentnost modelování a scénářů snižuje důvěru v jejich využívání.",
-      "Q18: Nízká relevance scénářů pro konkrétní rozhodnutí snižuje jejich užitečnost.",
-      "Q19: Příliš široké scénáře nejsou využitelné pro specifické potřeby a konflikty, s nimiž instituce pracují.",
-      "Q20: Kvalitativní přístupy jsou často opomíjeny, protože rozhodování preferuje kvantitativní technicko-ekonomické metody.",
-      "Q21: Práce se scénáři a modelování je vnímána jako příliš složitý a málo flexibilní proces.",
-      "Q22: Scénáře mohou být vnímány jako příliš odvážné vzhledem ke konzervativnímu uvažování politických představitelů.",
-      "Q23: Nedostatek interních znalostí, zkušeností a kapacit omezuje práci se scénáři.",
-      "Q24: Nedostatek neformálních vazeb a sítí mezi institucemi brání spolupráci potřebné pro práci se scénáři.",
-      "Q25: Nedostatečná spolupráce s externími experty omezuje porozumění scénářovým procesům.",
-      "Q26: Chybějící regulatorní ukotvení ambiciózních cílů snižuje možnost využít scénáře pro dlouhodobé plánování."
+      "Q3: Nedostatek podmínek pro dlouhodobý, adaptabilní a flexibilní proces brání efektivnímu využití scénářů.",
+      "Q4: Nedostatek systematické finanční podpory brání rozvoji a využívání scénářů.",
+      "Q5: Scénáře jsou považovány za irelevantní, pokud nepřinášejí nové nebo užitečné poznatky.",
+      "Q6: Nedůvěra vůči scénářům, jejich metodám, obsahu či hodnotovým rámcům omezuje jejich využití.",
+      "Q7: Nízké povědomí mezi tvůrci politik omezuje využívání scénářů.",
+      "Q8: Nedostatek časových kapacit brání pracovníkům využívat scénáře.",
+      "Q9: Využití scénářů brání nedostatek dovedností a zkušeností s tímto nástrojem.",
+      "Q10: Nízká motivace a angažovanost pracovníků snižují využitelnost scénářů.",
+      "Q11: Nedostatek kvalitních dat omezuje tvorbu a použitelnost scénářů.",
+      "Q12: Nedostatečné školení a informační podpora snižují schopnost pracovat se scénáři.",
+      "Q13: Nekompatibilní časové horizonty scénářů a institucí ztěžují jejich praktické využití.",
+      "Q14: Netransparentnost modelování a scénářů snižuje důvěru v jejich využívání.",
+      "Q15: Nízká relevance scénářů pro konkrétní rozhodnutí snižuje jejich užitečnost.",
+      "Q16: Příliš široké scénáře nejsou využitelné pro specifické potřeby a konflikty, s nimiž instituce pracují.",
+      "Q17: Kvalitativní přístupy jsou často opomíjeny, protože rozhodování preferuje kvantitativní technicko-ekonomické metody.",
+      "Q18: Práce se scénáři a modelování je vnímána jako příliš složitý a málo flexibilní proces.",
+      "Q19: Scénáře mohou být vnímány jako příliš odvážné vzhledem ke konzervativnímu uvažování politických představitelů.",
+      "Q20: Nedostatek interních znalostí, zkušeností a kapacit omezuje práci se scénáři.",
+      "Q21: Nedostatek neformálních vazeb a sítí mezi institucemi brání spolupráci potřebné pro práci se scénáři.",
+      "Q22: Nedostatečná spolupráce s externími experty omezuje porozumění scénářovým procesům."
     ];
 
-    // 26 slotů: 1+2+3+4+6+4+3+2+1 = 26
-    const distribution = [-4,-3,-2,-1,0,1,2,3,4];
-    const slotsPerColumn = { "-4":1, "-3":2, "-2":3, "-1":4, "0":6, "1":4, "2":3, "3":2, "4":1 };
+    // 22 slotů: 2+3+4+4+4+3+2 = 22, škála -3 až +3
+    const distribution = [-3, -2, -1, 0, 1, 2, 3];
+    const slotsPerColumn = { "-3":2, "-2":3, "-1":4, "0":4, "1":4, "2":3, "3":2 };
 
     let submitting = false;
 
-    function start() {
-      if (!document.getElementById('consentCheck').checked) {
-        alert("Musíte souhlasit, abyste mohli pokračovat.");
-        return;
-      }
-      document.getElementById('consent').style.display = 'none';
-      document.getElementById('main').style.display = 'block';
+    // Inicializace po načtení
+    window.addEventListener('DOMContentLoaded', () => {
       buildGrid();
       renderStatements();
       enablePoolDrop();
-    }
+      enableAutoScrollOnDrag();
+    });
 
     function buildGrid() {
       const grid = document.getElementById('qgrid');
@@ -269,11 +311,11 @@ overflow-x: hidden;
 
         const desc = document.createElement('div');
         desc.className = 'col-desc';
-        if (val === -4) {
+        if (val === -3) {
           desc.textContent = 'Nejméně odpovídá tomu, co si myslím';
         } else if (val === 0) {
           desc.textContent = 'Neutrální';
-        } else if (val === 4) {
+        } else if (val === 3) {
           desc.textContent = 'Nejvíce odpovídá tomu, co si myslím';
         } else {
           desc.textContent = '';
@@ -294,17 +336,14 @@ overflow-x: hidden;
           slot.ondrop = drop;
           slot.ondragover = allowDrop;
 
-          // BARVY:
-          //  - střed (0) bílý
-          //  - červené: nejtmavší -4, nejsvětlejší -1
-          //  - zelené: nejtmavší +4, nejsvětlejší +1
+          // BARVY: červená pro záporné, zelená pro kladné, střed bílý
           if (val === 0) {
             slot.style.backgroundColor = '#ffffff';
           } else if (val < 0) {
-            const alpha = 0.3 + 0.15 * Math.abs(val); // 0.45 pro -1, 0.9 pro -4
+            const alpha = 0.3 + 0.1 * Math.abs(val);
             slot.style.backgroundColor = `rgba(255, 150, 150, ${alpha})`;
           } else if (val > 0) {
-            const alpha = 0.3 + 0.15 * Math.abs(val); // 0.45 pro +1, 0.9 pro +4
+            const alpha = 0.3 + 0.1 * Math.abs(val);
             slot.style.backgroundColor = `rgba(150, 255, 150, ${alpha})`;
           }
 
@@ -327,7 +366,6 @@ overflow-x: hidden;
       });
     }
 
-    // přesuny mezi třemi boxy
     function enablePoolDrop() {
       const buckets = document.querySelectorAll('.bucket');
       buckets.forEach(bucket => {
@@ -345,7 +383,9 @@ overflow-x: hidden;
     }
 
     function allowDrop(ev){ ev.preventDefault(); }
+
     function drag(ev){ ev.dataTransfer.setData("text", ev.target.id); }
+
     function drop(ev){
       ev.preventDefault();
       const data = ev.dataTransfer.getData("text");
@@ -355,7 +395,22 @@ overflow-x: hidden;
       }
     }
 
-    // FINÁLNÍ submitData pro ostrou verzi
+    // Auto-scroll při dragování směrem dolů/nahoru
+    function enableAutoScrollOnDrag() {
+      document.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        const margin = 80;
+        const y = e.clientY;
+        const h = window.innerHeight;
+
+        if (y > h - margin) {
+          window.scrollBy({ top: 20, left: 0, behavior: 'smooth' });
+        } else if (y < margin) {
+          window.scrollBy({ top: -20, left: 0, behavior: 'smooth' });
+        }
+      });
+    }
+
     function submitData(){
       if (submitting) {
         alert("Váš Q-sort už byl odeslán.");
@@ -365,6 +420,12 @@ overflow-x: hidden;
       const participantId = document.getElementById('participantId').value.trim();
       if (!participantId) {
         alert("Zadejte prosím ID účastníka (např. P01).");
+        return;
+      }
+
+      const consentChecked = document.getElementById('consentCheckbox').checked;
+      if (!consentChecked) {
+        alert("Pro pokračování prosím potvrďte informovaný souhlas.");
         return;
       }
 
@@ -383,12 +444,16 @@ overflow-x: hidden;
       });
 
       if (results.length < statements.length) {
-        alert("Prosím rozmístěte všech 26 výroků do mřížky, než odešlete odpovědi.");
+        alert("Prosím rozmístěte všech 22 výroků do mřížky, než odešlete odpovědi.");
         return;
       }
 
+      const opportunities = document.getElementById('opportunities').value.trim();
+
       const payload = {
         participantId: participantId,
+        consent: true,
+        opportunities: opportunities,
         results: results
       };
 
@@ -397,9 +462,9 @@ overflow-x: hidden;
       btn.disabled = true;
 
       fetch(SCRIPT_URL, {
-        method:'POST',
-        mode:'no-cors',
-        headers:{'Content-Type':'application/json'},
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {'Content-Type':'application/json'},
         body: JSON.stringify(payload)
       }).then(()=>{
         btn.textContent = "Q-sort byl odeslán";
