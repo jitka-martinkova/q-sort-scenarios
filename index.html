@@ -5,14 +5,15 @@
   <title>Q-sort – scénáře</title>
   <style>
     body {
-font-family: Arial, sans-serif;
-background: #f5f5f5;
-margin: 0;
-padding: 0;
-overflow-x: hidden;
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      margin: 0;
+      padding: 0;
       text-align: center;
     }
+
     h1 { color: #333; }
+
     .consent-box {
       background: white;
       padding: 20px;
@@ -22,27 +23,33 @@ overflow-x: hidden;
       margin: 20px auto;
       text-align: left;
     }
+
     .consent-box h1 {
       text-align: center;
     }
+
     .consent-actions {
       text-align: center;
       margin-top: 15px;
     }
+
     #main {
- width: 100%;
-  max-width: 1600px;
-  margin: 0 auto;
-  padding: 20px;
+      width: 100%;
+      max-width: 1600px;
+      margin: 20px auto;
+      padding: 0 10px;
     }
+
     #participantRow {
       margin-top: 10px;
       text-align: left;
     }
+
     #participantRow label {
       font-size: 14px;
       margin-right: 8px;
     }
+
     #participantId {
       padding: 4px 8px;
       font-size: 14px;
@@ -50,22 +57,24 @@ overflow-x: hidden;
       border: 1px solid #aaa;
     }
 
-    /* ZÁSOBNÍK – TŘI BOXY PŘES CELOU ŠÍŘKU */
+    /* ZÁSOBNÍK – TŘI BOXY PŘES ŠÍŘKU */
     #statements {
- display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  width: 100%;
-  margin-top: 20px;
+      display: flex;
+      flex-direction: row;
+      gap: 12px;
+      justify-content: space-between;
+      margin-top: 20px;
       padding: 10px;
       border-radius: 8px;
       background: #ffffff;
       box-shadow: 0 0 6px rgba(0,0,0,0.08);
-
+      box-sizing: border-box;
+      width: 100%;
     }
+
     .bucket {
       flex: 1;
-      min-width: 0; /* aby flex správně roztáhl všechny tři */
+      min-width: 0;
       min-height: 80px;
       border-radius: 6px;
       border: 1px dashed #bbb;
@@ -74,7 +83,9 @@ overflow-x: hidden;
       display: flex;
       flex-direction: column;
       align-items: stretch;
+      box-sizing: border-box;
     }
+
     .bucket-title {
       font-weight: bold;
       font-size: 13px;
@@ -91,8 +102,8 @@ overflow-x: hidden;
       cursor: grab;
       font-size: 12px;
       text-align: left;
-      width: 100%;            /* vyplní celou šířku bucketu */
-      box-sizing: border-box; /* včetně paddingu */
+      width: 100%;
+      box-sizing: border-box;
     }
 
     /* WRAPPER S HORIZONTÁLNÍM SCROLLEM */
@@ -101,17 +112,18 @@ overflow-x: hidden;
       margin-top: 30px;
       padding: 0 10px 10px;
     }
+
     .grid {
-        display: flex;
-  justify-content: space-between;
-  width: 100%;
-  margin-top: 30px;
+      display: inline-flex;
+      justify-content: flex-start;
+      width: max-content;
     }
+
     .column {
       display: flex;
       flex-direction: column;
       align-items: center;
-      margin: 0 5px;
+      margin: 0; /* žádné mezery mezi sloupci */
     }
 
     .col-header {
@@ -119,13 +131,15 @@ overflow-x: hidden;
       flex-direction: column;
       align-items: center;
       justify-content: flex-end;
-      min-height: 60px; /* stejné pro všechny sloupce → zarovnání */
-      margin-bottom: 5px;
+      min-height: 60px;
+      margin-bottom: 0;
     }
+
     .column-label {
       font-weight: bold;
       margin-top: 2px;
     }
+
     .col-desc {
       font-size: 11px;
       text-align: center;
@@ -134,11 +148,11 @@ overflow-x: hidden;
     }
 
     .slot {
-      width: 140px;
-      height: 80px;
-      border: 1px dashed #aaa;
-      margin: 0px;
-      border-radius: 0px;
+      width: 140px;               /* o něco užší než původních ~160px */
+      height: 70px;
+      border: 1px solid #aaa;
+      margin: 0;                  /* žádný margin = buňky přiléhají */
+      border-radius: 0;           /* žádné zaoblení */
       font-size: 11px;
       overflow: hidden;
       display: flex;
@@ -146,6 +160,7 @@ overflow-x: hidden;
       justify-content: center;
       text-align: left;
       padding: 2px;
+      box-sizing: border-box;
     }
 
     #submitBtn {
@@ -158,7 +173,9 @@ overflow-x: hidden;
       cursor: pointer;
       font-size: 15px;
     }
+
     #submitBtn:hover { background: #45a049; }
+
     #submitBtn:disabled {
       opacity: 0.6;
       cursor: default;
@@ -208,9 +225,9 @@ overflow-x: hidden;
   </div>
 
   <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzlUdMls5MQgXGxQVEhGikBHE4OouykPgn3M6BydCwVQkrQtmTaK8XH35fZVoUhGF5I/exec";
+    const SCRIPT_URL = "PASTE_SEM_SVOJE_APPS_SCRIPT_URL"; // ← sem vlož URL webové app z Apps Scriptu
 
-    // 26 výroků
+    // 25 výroků (Q26 odstraněna)
     const statements = [
       "Q1: Absence dedikovaných institucionálních kapacit omezuje využívání scénářů.",
       "Q2: Nedostatek koordinace mezi sektory a institucemi omezuje práci se scénáři socio-ekonomického vývoje.",
@@ -225,7 +242,7 @@ overflow-x: hidden;
       "Q11: Nedostatek finančních zdrojů brání efektivnímu využívání scénářů.",
       "Q12: Nedostatek kvalitních dat omezuje tvorbu a použitelnost scénářů.",
       "Q13: Nízká motivace a angažovanost pracovníků snižují využívání scénářů.",
-      "Q14: VYHODIT JEDNO POLE....",
+      "Q14: Nedostatek kvalitních dat omezuje tvorbu a použitelnost scénářů.",
       "Q15: Nedostatečné školení a informační podpora snižují schopnost pracovat se scénáři.",
       "Q16: Nekompatibilní časové horizonty scénářů a institucí ztěžují jejich praktické využití.",
       "Q17: Nettransparentnost modelování a scénářů snižuje důvěru v jejich využívání.",
@@ -236,13 +253,12 @@ overflow-x: hidden;
       "Q22: Scénáře mohou být vnímány jako příliš odvážné vzhledem ke konzervativnímu uvažování politických představitelů.",
       "Q23: Nedostatek interních znalostí, zkušeností a kapacit omezuje práci se scénáři.",
       "Q24: Nedostatek neformálních vazeb a sítí mezi institucemi brání spolupráci potřebné pro práci se scénáři.",
-      "Q25: Nedostatečná spolupráce s externími experty omezuje porozumění scénářovým procesům.",
-      "Q26: Chybějící regulatorní ukotvení ambiciózních cílů snižuje možnost využít scénáře pro dlouhodobé plánování."
+      "Q25: Nedostatečná spolupráce s externími experty omezuje porozumění scénářovým procesům."
     ];
 
-    // 26 slotů: 1+2+3+4+6+4+3+2+1 = 26
+    // 25 slotů: 1+2+3+4+5+4+3+2+1 = 25
     const distribution = [-4,-3,-2,-1,0,1,2,3,4];
-    const slotsPerColumn = { "-4":1, "-3":2, "-2":3, "-1":4, "0":6, "1":4, "2":3, "3":2, "4":1 };
+    const slotsPerColumn = { "-4":1, "-3":2, "-2":3, "-1":4, "0":5, "1":4, "2":3, "3":2, "4":1 };
 
     let submitting = false;
 
@@ -294,17 +310,14 @@ overflow-x: hidden;
           slot.ondrop = drop;
           slot.ondragover = allowDrop;
 
-          // BARVY:
-          //  - střed (0) bílý
-          //  - červené: nejtmavší -4, nejsvětlejší -1
-          //  - zelené: nejtmavší +4, nejsvětlejší +1
+          // barvy podle hodnoty
           if (val === 0) {
             slot.style.backgroundColor = '#ffffff';
           } else if (val < 0) {
-            const alpha = 0.3 + 0.15 * Math.abs(val); // 0.45 pro -1, 0.9 pro -4
+            const alpha = 0.3 + 0.15 * Math.abs(val);
             slot.style.backgroundColor = `rgba(255, 150, 150, ${alpha})`;
           } else if (val > 0) {
-            const alpha = 0.3 + 0.15 * Math.abs(val); // 0.45 pro +1, 0.9 pro +4
+            const alpha = 0.3 + 0.15 * Math.abs(val);
             slot.style.backgroundColor = `rgba(150, 255, 150, ${alpha})`;
           }
 
@@ -327,7 +340,6 @@ overflow-x: hidden;
       });
     }
 
-    // přesuny mezi třemi boxy
     function enablePoolDrop() {
       const buckets = document.querySelectorAll('.bucket');
       buckets.forEach(bucket => {
@@ -355,7 +367,6 @@ overflow-x: hidden;
       }
     }
 
-    // FINÁLNÍ submitData pro ostrou verzi
     function submitData(){
       if (submitting) {
         alert("Váš Q-sort už byl odeslán.");
@@ -383,7 +394,7 @@ overflow-x: hidden;
       });
 
       if (results.length < statements.length) {
-        alert("Prosím rozmístěte všech 26 výroků do mřížky, než odešlete odpovědi.");
+        alert("Prosím rozmístěte všech 25 výroků do mřížky, než odešlete odpovědi.");
         return;
       }
 
