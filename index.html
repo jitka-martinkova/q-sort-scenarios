@@ -104,7 +104,7 @@
       box-sizing: border-box;
     }
 
-    /* GRID PRO Q-SORT – 95% ŠÍŘKY, BEZ MEZER MEZI BUŇKAMI */
+    /* GRID PRO Q-SORT – PŘES CELOU ŠÍŘKU MAIN */
     #gridWrapper {
       overflow-x: auto;
       margin-top: 20px;
@@ -113,9 +113,9 @@
     }
 
     .grid {
-      display: inline-flex;
-      justify-content: flex-start;
-      width: max-content; /* přizpůsobí se sloupcům, ale celé je v #gridWrapper */
+      display: flex;
+      justify-content: space-between; /* roztáhne sloupce přes celou šířku */
+      width: 100%;                   /* využije celý main container */
     }
 
     .column {
@@ -147,10 +147,10 @@
     }
 
     .slot {
-      width: 130px;          /* mírně užší */
-      height: 65px;
+      width: 180px;          /* širší kvůli celým textům */
+      height: 80px;
       border: 1px solid #aaa;
-      margin: 0;             /* žádný margin = přiléhat k sobě */
+      margin: 0;             /* žádný margin = přiléhat k sobě vertikálně */
       border-radius: 0;
       font-size: 11px;
       overflow: hidden;
@@ -158,12 +158,12 @@
       align-items: center;
       justify-content: center;
       text-align: left;
-      padding: 2px;
+      padding: 4px;
       box-sizing: border-box;
     }
 
     #submitBtn {
-      margin-top: 20px;
+      margin-top: 10px;
       padding: 10px 20px;
       border: none;
       background: #4CAF50;
@@ -242,8 +242,6 @@
       <div id="gridWrapper">
         <div class="grid" id="qgrid"></div>
       </div>
-
-      <button id="submitBtn" onclick="submitData()">Odeslat můj Q-sort</button>
     </div>
 
     <!-- 3) PŘÍLEŽITOSTI -->
@@ -255,12 +253,17 @@
       </p>
       <textarea id="opportunities" placeholder="Vaše odpověď (nepovinné, ale vítané)..."></textarea>
     </div>
+
+    <!-- TLAČÍTKO AŽ NA KONCI STRÁNKY -->
+    <div style="text-align: center; margin-bottom: 30px;">
+      <button id="submitBtn" onclick="submitData()">Odeslat můj Q-sort</button>
+    </div>
   </div>
 
   <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxQ4UMNSMGjfUM8EJBA1SGlvakxk_RKEzxEopXB2BJ6a_KLUQ1g4Se7jd5VB0_nyyMW/exec"; // ← sem vlož URL webové aplikace z Apps Scriptu
 
-    // 22 výroků
+    // 23 výroků (22 původních + Q23: Placeholder)
     const statements = [
       "Q1: Absence dedikovaných institucionálních kapacit omezuje využívání scénářů.",
       "Q2: Nedostatek koordinace mezi sektory a institucemi omezuje práci se scénáři socio-ekonomického vývoje.",
@@ -283,12 +286,14 @@
       "Q19: Scénáře mohou být vnímány jako příliš odvážné vzhledem ke konzervativnímu uvažování politických představitelů.",
       "Q20: Nedostatek interních znalostí, zkušeností a kapacit omezuje práci se scénáři.",
       "Q21: Nedostatek neformálních vazeb a sítí mezi institucemi brání spolupráci potřebné pro práci se scénáři.",
-      "Q22: Nedostatečná spolupráce s externími experty omezuje porozumění scénářovým procesům."
+      "Q22: Nedostatečná spolupráce s externími experty omezuje porozumění scénářovým procesům.",
+      "Q23: Placeholder."
     ];
 
-    // 22 slotů: 2+3+4+4+4+3+2 = 22, škála -3 až +3
+    // 23 slotů: 2+3+5+5+5+3+2 = 25 (to je 25, takže upravíme na 23: 2+3+4+5+4+3+2 = 23)
+    // škála -3 až +3, s jedním slotem navíc u 0 oproti původní 22-slotové verzi
     const distribution = [-3, -2, -1, 0, 1, 2, 3];
-    const slotsPerColumn = { "-3":2, "-2":3, "-1":4, "0":4, "1":4, "2":3, "3":2 };
+    const slotsPerColumn = { "-3":2, "-2":3, "-1":4, "0":5, "1":4, "2":3, "3":2 }; // součet = 23
 
     let submitting = false;
 
@@ -444,7 +449,7 @@
       });
 
       if (results.length < statements.length) {
-        alert("Prosím rozmístěte všech 22 výroků do mřížky, než odešlete odpovědi.");
+        alert("Prosím rozmístěte všech 23 výroků do mřížky, než odešlete odpovědi.");
         return;
       }
 
