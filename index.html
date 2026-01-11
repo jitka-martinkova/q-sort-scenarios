@@ -148,16 +148,15 @@
     }
 
     .grid {
-      display: inline-flex;
-      justify-content: flex-start;
-      width: max-content;
+        display: flex;
+  width: 100%;
     }
 
     .column {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin: 0;
+        flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
     }
 
     .col-header {
@@ -181,21 +180,21 @@
       min-height: 26px;
     }
 
-    .slot {
-      width: 210px;      /* aby se do nich vešly celé výroky */
-      min-height: 92px;
-      border: 1px solid #aaa;
-      margin: 0;
-      border-radius: 0;
-      font-size: 11px;
-      overflow: hidden;
-      display: flex;
-      align-items: stretch;
-      justify-content: stretch;
-      text-align: left;
-      padding: 4px;
-      box-sizing: border-box;
-    }
+          .slot {
+  width: 100%;
+  min-height: 100px;
+  border: 1px solid #aaa;
+  margin: 0;
+  border-radius: 0;
+  font-size: 11px;
+  overflow: hidden;
+  display: flex;
+  align-items: stretch;
+  padding: 6px;
+  box-sizing: border-box;
+}
+
+    
 
     .slot .statement {
       margin: 0;
@@ -489,19 +488,22 @@
 
     // Auto-scroll při dragování směrem dolů/nahoru
     function enableAutoScrollOnDrag() {
-      document.addEventListener('dragover', function(e) {
-        e.preventDefault();
-        const margin = 90;
-        const y = e.clientY;
-        const h = window.innerHeight;
+  document.addEventListener('dragover', function (e) {
+    e.preventDefault();
 
-        if (y > h - margin) {
-          window.scrollBy({ top: 24, left: 0, behavior: 'smooth' });
-        } else if (y < margin) {
-          window.scrollBy({ top: -24, left: 0, behavior: 'smooth' });
-        }
-      });
+    const scrollZone = 120; // px od okraje
+    const scrollSpeed = 28;
+    const y = e.clientY;
+    const h = window.innerHeight;
+
+    if (y > h - scrollZone) {
+      window.scrollBy(0, scrollSpeed);
+    } else if (y < scrollZone) {
+      window.scrollBy(0, -scrollSpeed);
     }
+  });
+}
+
 
     function submitData(){
       if (submitting) {
@@ -559,3 +561,4 @@
   </script>
 </body>
 </html>
+
