@@ -322,46 +322,44 @@
     // === HESLO ===
     const PAGE_PASSWORD = "chko";
 
-    // 33 výroků
+    // 31 výroků
     const statements = [
-      "Q1: Nemám dostatečnou důvěru vůči metodám, datům nebo případným externím tvůrcům scénářů.",
-      "Q2: K procesu by byla potřeba meziresortní spolupráce, která mi ale v praxi přijde složitá a těžko realizovatelná.",
-      "Q3: K využití scénářů by byla třeba spolupráce s externími odborníky, která by zvýšila kapacitu pro efektivní využití scénářů.",
-      "Q4: Komunikace kolem scénářů bývá matoucí (buď příliš povrchní nebo naopak technická) a to snižuje důvěru vůči tomuto nástroji.",
-      "Q5: Kvalitativní scénáře bez \"čísel\" (například bez kvantifikace některých trendů) mohou být málo přesvědčivé.",
-      "Q6: Mou důvěru a motivaci k využití scénářů by značně snížilo, kdybych jako uživatel/ka nebyl/a zapojen/a do jejich tvorby.",
-      "Q7: Na našem pracovišti potřebujeme trochu jiný typ informací a výstupů, než které nabízí využití scénářů.",
-      "Q8: Naše práce musí reflektovat různorodé cíle, potřeby a zájmy, bylo by těžké shodnout se na zadání nebo účelu scénářů nebo na účasti klíčových aktérů.",
-      "Q9: Nemáme dostatek podrobných informací o tom, jak přesně scénáře fungují nebo v čem by mohly být konkrétně nám užitečné.",
-      "Q10: Pracujeme spíše s tradičnějšími metodami, netradiční formáty nebo i příliš transformativní cíle některých scénářů mohou být v prostředí veřejné správy těžko uplatnitelné.",
-      "Q11: Pro efektivní využití scénářů v naší práci nevidím dostatek finančních zdrojů, které by byly třeba.",
-      "Q12: Pro kvalitní práci se scénáři nebo i pro jejich tvorbu nemáme dostatek dat.",
-      "Q13: Pro podobné plánovací přístupy chybí silná politická podpora. Scénáře mohou generovat návrhy opatření, které budou politicky neprosaditelné.",
-      "Q14: Pro rozhodování bychom potřebovali znát u scénářů i pravděpodobnosti různých variant vývoje, bez nich je tento nástroj špatně použitelný.",
-      "Q15: Pro vytváření nebo využívání scénářů nemáme dostatek časových a organizačních kapacit.",
-      "Q16: Problém vidím v dostatku vnitřní motivace, která by byla k zapojení scénářů do naší práce třeba.",
-      "Q17: Proces tvorby strategií, politik nebo opatření v naší praxi má svá specifika a zapojení scénářů do tohoto procesu mi přijde těžko představitelné.",
-      "Q18: Při modelování scénářů mohou zapadnout důležité (těžko kvantifikovatelné) faktory, které jsou ale pro úspěch navrhovaných řešení v praxi klíčové (například hodnoty nebo postoje populace).",
-      "Q19: Scénáře mohou zviditelnit konflikty, které tato instituce nemusí být připravena řešit.",
-      "Q20: Scénáře nebo jejich modelování nejsou dostatečně flexibilní a přizpůsobitelné pro naše využití, naše agenda, priority, řešené otázky nebo i data se rychle mění.",
-      "Q21: Scénáře nejsou dostatečně objektivní, transparentní a kredibilní nástroj.",
-      "Q22: Scénáře nejsou dostatečně relevantní, protože využívají lineární logiku a nedokáží proto zachytit případné \"černé labutě\" nebo různé nečekané transformativní zlomy ve vývoji.",
-      "Q23: Scénáře někdy evokují (a zdá se, že i prosazují) některé politické postoje nebo hodnoty, se kterými nesouzním, což snižuje mojí důvěru vůči jejich obsahu.",
-      "Q24: Scénáře pracují spíše s delšími časovými horizonty, my ale potřebujeme dělat spíše krátkodobější rozhodnutí a reagovat na aktuální potřeby.",
-      "Q25: Scénáře vnímám spíš jako jednorázový produkt neuplatnitelný pro dlouhodobé využití.",
-      "Q26: Tvorba scénářů a jejich modelování by měly probíhat uvnitř instituce, jinak nebudou výstupy dostatečně důvěryhodné.",
-      "Q27: V naší praxi není dostatečný prostor pro experimenty s podobnými formáty, které by vyžadovaly dlouhodobý proces a náročné přizpůsobování těchto nástrojů (např. modelů) měnícím se potřebám a cílů, které řešíme.",
-      "Q28: V rámci instituce chybí pro efektivní práci se scénáři dostatečné kompetence.",
-      "Q29: Vnímám práci se scénáři často spíše akademickou a pro naše rozhodování nedostatečně transparentní. Modelování scénářů může být netranspatentní „černá skříňka“, což snižuje důvěru.",
-      "Q30: Využití scénářů by napomohlo, kdyby bylo přímo ukotvené v některých plánovacích a rozhodovacích procesech.",
-      "Q31: Využití scénářů je těžko slučitelné s reálnými plánovacími a politickými cykly, ve kterých fungujeme.",
-      "Q32: Využití více scénářů různých budoucností je pro naši praxi spíše matoucí, potřebujeme pracovat s jednou vizí cílového stavu.",
-      "Q33: Využívání scénářů limituje nedostatečná externí podpora tohoto přístupu, například v podobě neformální sítě foresightových a scénářových specialistů sdílejících informace a spolupracujících napříč různými institucemi i resorty."
+      "Q1:	K efektivní práci se scénáři by byla potřeba meziresortní spolupráce, která mi ale v praxi přijde složitá.	",
+"Q2:	K využití scénářů bychom potřebovali kompenzovat nedostatečné interní kapacity spoluprací s externími odborníky. 	",
+"Q3:	K využívání scénářů by byla vhodná externí podpora širší (i neformální) sítě scénářových specialistů spolupracujících napříč různými institucemi i resorty.	",
+"Q4:	Komunikace kolem scénářů bývá matoucí (buď příliš povrchní nebo naopak technická) a to snižuje mou důvěru vůči tomuto nástroji. 	",
+"Q5:	Kvalitativní scénáře bez "čísel" (tj. bez kvantifikace údajů) jsou pro naši praxi být málo přesvědčivé.	",
+"Q6:	Mou důvěru a motivaci k využití scénářů by snížilo, kdybych nebyl/a jakožto uživatel/ka zapojen/a už do procesu tvorby scénářů.	",
+"Q7:	Na našem pracovišti potřebujeme trochu jiný typ informací a výstupů, než které nabízí využití scénářů.	",
+"Q8:	Naše práce musí reflektovat různorodé cíle, potřeby a zájmy, proto by bylo těžké shodnout se např. na zadání nebo účelu scénářů.	",
+"Q9:	Nemáme dostatek podrobných informací o tom, jak přesně scénáře fungují nebo v čem by mohly být konkrétně nám užitečné. 	",
+"Q10:	Nemáme kapacitu (zejména časovou a organizační), kterou bychom mohli pro práci se scénáří využít. 	",
+"Q11:	Netradiční metody a nástroje nebo i příliš transformativní cíle některých scénářů mohou být v naší praxi těžko uplatnitelné.	",
+"Q12:	Plánování a rozhodování v naší praxi má svá procesní specifika, kvůli kterým mi přijde zapojení scénářů do naší praxe těžko představitelné.	",
+"Q13:	Pro efektivní využití scénářů (např. jejich tvorbu nebo simulační modelování) nemáme dostatek finančních zdrojů. 	",
+"Q14:	Pro podobné plánovací přístupy chybí politická podpora. Scénáře mohou generovat návrhy na opatření, jejichž implementace bude politicky neprosaditelná.	",
+"Q15:	Pro rozhodování bychom potřebovali znát u scénářů i pravděpodobnosti různých variant vývoje, bez kterých je pro nás tento nástroj špatně použitelný.	",
+"Q16:	Problém vidím v nedostatku osobní motivace, která by byla k zapojení scénářů do naší praxe třeba.	",
+"Q17:	Scénáře mohou zviditelnit případné konflikty, které tato instituce nemusí být připravena řešit.	",
+"Q18:	Scénáře nebo jejich modelování nedokáží uchopit některé faktory klíčové pro uplatnění plánů a strategií (například hodnoty, chování, lidský faktor).	",
+"Q19:	Scénáře nebo jejich modelování nejsou dostatečně flexibilní a přizpůsobivé, aby reagovaly na změny priorit, problémů, otázek nebo i dat v naší práci.  	",
+"Q20:	Scénáře někdy evokují (a zdá se, že i prosazují) některé politické postoje nebo hodnoty, se kterými ne vždy souzním. Snižuje to mou důvěru.	",
+"Q21:	Scénáře nevnímám jako dostatečně objektivní, transparentní a kredibilní nástroj. 	",
+"Q22:	Scénáře pracují spíše s delšími časovými horizonty, my ale potřebujeme dělat spíše krátkodobější rozhodnutí.	",
+"Q23:	Scénáře vnímám spíš jako jednorázový produkt neuplatnitelný pro dlouhodobé využití. 	",
+"Q24:	Tvorba scénářů a jejich modelování by měly probíhat uvnitř instituce, jinak nebudou výstupy dostatečně důvěryhodné.	",
+"Q25:	V naší praxi není dostatečný prostor pro experimenty s formáty, které by vyžadovaly dlouhodobý proces zavádění a (postupného) přizpůsobení našim potřebám a cílům. 	",
+"Q26:	V rámci instituce nám chybí dostatečné kompetence pro práci se scénáři. 	",
+"Q27:	Vnímám práci se scénáři jako spíše akademickou a nedostatečně transparentní. I modelování scénářů může být trochu „černá skříňka“ bez transparence potřebné ve veřejné správě. 	",
+"Q28:	Využití scénářů je těžko slučitelné s reálnými plánovacími a politickými cykly, ve kterých fungujeme.	",
+"Q29:	Využití scénářů v naší praxi by pomohlo, kdyby bylo přímo ukotvené v konkrétních plánovacích a rozhodovacích procesech.	",
+"Q30:	Využití více scénářů různých budoucností je pro naši praxi spíše matoucí, potřebujeme pracovat s jednou vizí cílového stavu.	",
+"Q31:	Za překážku využití scénářů v naší praxi považuji nedostatek vhodných dat.	"
     ];
 
-    // Distribuce 33 slotů: -4..+4 = 1,2,4,6,7,6,4,2,1
-    const distribution = [-4, -3, -2, -1, 0, 1, 2, 3, 4];
-    const slotsPerColumn = { "-4":1, "-3":2, "-2":4, "-1":6, "0":7, "1":6, "2":4, "3":2, "4":1 };
+    // Distribuce 31 slotů: -3..+3 = 2,4,6,7,6,4,2
+    const distribution = [-3, -2, -1, 0, 1, 2, 3];
+    const slotsPerColumn = { "-3":2, "-2":4, "-1":6, "0":7, "1":6, "2":4, "3":2 };
 
     let submitting = false;
 
@@ -582,4 +580,5 @@
   </script>
 </body>
 </html>
+
 
