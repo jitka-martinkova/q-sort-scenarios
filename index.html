@@ -1,507 +1,262 @@
-<!DOCTYPE html>
-<html lang="cs">
-<head>
-  <meta charset="UTF-8" />
-  <title>Q-sort – Bariéry práce se scénáři</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f5f5f5;
-      margin: 0;
-      padding: 0;
-      text-align: center;
+<script>
+  // URL Apps Script webové aplikace – případně uprav podle své nasazené verze
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxQ4UMNSMGjfUM8EJBA1SGlvakxk_RKEzxEopXB2BJ6a_KLUQ1g4Se7jd5VB0_nyyMW/exec";
+
+  // === HESLO ===
+  const PAGE_PASSWORD = "chko";
+
+  // 31 výroků (Q1–Q31)
+  const statements = [
+    "Q1: K efektivní práci se scénáři by byla potřeba meziresortní spolupráce, která mi ale v praxi přijde složitá.",
+    "Q2: K využití scénářů bychom potřebovali kompenzovat nedostatečné interní kapacity spoluprací s externími odborníky.",
+    "Q3: K využívání scénářů by byla vhodná externí podpora širší (i neformální) sítě scénářových specialistů spolupracujících napříč různými institucemi i resorty.",
+    "Q4: Komunikace kolem scénářů bývá matoucí (buď příliš povrchní nebo naopak technická) a to snižuje mou důvěru vůči tomuto nástroji.",
+    "Q5: Kvalitativní scénáře bez \"čísel\" (tj. bez kvantifikace údajů) jsou pro naši praxi být málo přesvědčivé.",
+    "Q6: Mou důvěru a motivaci k využití scénářů by snížilo, kdybych nebyl/a jakožto uživatel/ka zapojen/a už do procesu tvorby scénářů.",
+    "Q7: Na našem pracovišti potřebujeme trochu jiný typ informací a výstupů, než které nabízí využití scénářů.",
+    "Q8: Naše práce musí reflektovat různorodé cíle, potřeby a zájmy, proto by bylo těžké shodnout se např. na zadání nebo účelu scénářů.",
+    "Q9: Nemáme dostatek podrobných informací o tom, jak přesně scénáře fungují nebo v čem by mohly být konkrétně nám užitečné.",
+    "Q10: Nemáme kapacitu (zejména časovou a organizační), kterou bychom mohli pro práci se scénáři využít.",
+    "Q11: Netradiční metody a nástroje nebo i příliš transformativní cíle některých scénářů mohou být v naší praxi těžko uplatnitelné.",
+    "Q12: Plánování a rozhodování v naší praxi má svá procesní specifika, kvůli kterým mi přijde zapojení scénářů do naší praxe těžko představitelné.",
+    "Q13: Pro efektivní využití scénářů (např. jejich tvorbu nebo simulační modelování) nemáme dostatek finančních zdrojů.",
+    "Q14: Pro podobné plánovací přístupy chybí politická podpora. Scénáře mohou generovat návrhy na opatření, jejichž implementace bude politicky neprosaditelná.",
+    "Q15: Pro rozhodování bychom potřebovali znát u scénářů i pravděpodobnosti různých variant vývoje, bez kterých je pro nás tento nástroj špatně použitelný.",
+    "Q16: Problém vidím v nedostatku osobní motivace, která by byla k zapojení scénářů do naší praxe třeba.",
+    "Q17: Scénáře mohou zviditelnit případné konflikty, které tato instituce nemusí být připravena řešit.",
+    "Q18: Scénáře nebo jejich modelování nedokáží uchopit některé faktory klíčové pro uplatnění plánů a strategií (například hodnoty, chování, lidský faktor).",
+    "Q19: Scénáře nebo jejich modelování nejsou dostatečně flexibilní a přizpůsobivé, aby reagovaly na změny priorit, problémů, otázek nebo i dat v naší práci.",
+    "Q20: Scénáře někdy evokují (a zdá se, že i prosazují) některé politické postoje nebo hodnoty, se kterými ne vždy souzním. Snižuje to mou důvěru.",
+    "Q21: Scénáře nevnímám jako dostatečně objektivní, transparentní a kredibilní nástroj.",
+    "Q22: Scénáře pracují spíše s delšími časovými horizonty, my ale potřebujeme dělat spíše krátkodobější rozhodnutí.",
+    "Q23: Scénáře vnímám spíš jako jednorázový produkt neuplatnitelný pro dlouhodobé využití.",
+    "Q24: Tvorba scénářů a jejich modelování by měly probíhat uvnitř instituce, jinak nebudou výstupy dostatečně důvěryhodné.",
+    "Q25: V naší praxi není dostatečný prostor pro experimenty s formáty, které by vyžadovaly dlouhodobý proces zavádění a (postupného) přizpůsobení našim potřebám a cílům.",
+    "Q26: V rámci instituce nám chybí dostatečné kompetence pro práci se scénáři.",
+    "Q27: Vnímám práci se scénáři jako spíše akademickou a nedostatečně transparentní. I modelování scénářů může být trochu „černá skříňka“ bez transparence potřebné ve veřejné správě.",
+    "Q28: Využití scénářů je těžko slučitelné s reálnými plánovacími a politickými cykly, ve kterých fungujeme.",
+    "Q29: Využití scénářů v naší praxi by pomohlo, kdyby bylo přímo ukotvené v konkrétních plánovacích a rozhodovacích procesech.",
+    "Q30: Využití více scénářů různých budoucností je pro naši praxi spíše matoucí, potřebujeme pracovat s jednou vizí cílového stavu.",
+    "Q31: Za překážku využití scénářů v naší praxi považuji nedostatek vhodných dat."
+  ];
+
+  // === 7 sloupců, 31 slotů ===
+  // škála: -3 -2 -1 0 +1 +2 +3
+  // distribuce: 2,4,6,7,6,4,2 = 31
+  const distribution = [-3, -2, -1, 0, 1, 2, 3];
+  const slotsPerColumn = { "-3":2, "-2":4, "-1":6, "0":7, "1":6, "2":4, "3":2 };
+
+  let submitting = false;
+
+  window.addEventListener('DOMContentLoaded', () => {
+    setupPasswordGate();
+  });
+
+  function setupPasswordGate() {
+    const overlay = document.getElementById('passwordOverlay');
+    const main = document.getElementById('main');
+    const input = document.getElementById('passwordInput');
+    const btn = document.getElementById('passwordBtn');
+    const err = document.getElementById('passwordError');
+
+    if (!overlay || !main || !input || !btn || !err) {
+      // Pokud něco chybí v DOM, zobraz alespoň alert pro debugging
+      alert("Chybí některý element pro heslové okno (passwordOverlay/passwordInput/passwordBtn/passwordError/main).");
+      return;
     }
 
-    h1, h2 { color: #333; }
+    function tryUnlock() {
+      const v = (input.value || "").trim();
+      if (v === PAGE_PASSWORD) {
+        overlay.style.display = 'none';
+        main.style.display = 'block';
+        err.style.display = 'none';
 
-    #main {
-      width: 95%;
-      max-width: 1400px;
-      margin: 20px auto;
-      text-align: left;
-      display: none; /* odemkne se po hesle */
+        buildGrid();
+        renderStatements();
+        enablePoolDrop();
+        enableAutoScrollOnDrag();
+      } else {
+        err.style.display = 'block';
+        input.focus();
+        input.select();
+      }
     }
 
-    .section {
-      background: #ffffff;
-      padding: 15px 20px;
-      margin-bottom: 20px;
-      border-radius: 8px;
-      box-shadow: 0 0 6px rgba(0,0,0,0.08);
-    }
-
-    #participantRow { margin-bottom: 15px; }
-    #participantRow label { font-size: 14px; margin-right: 8px; }
-
-    #participantId {
-      padding: 4px 8px;
-      font-size: 14px;
-      border-radius: 4px;
-      border: 1px solid #aaa;
-    }
-
-    /* === Heslový overlay === */
-    #passwordOverlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.55);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 9999;
-    }
-    #passwordCard {
-      width: min(520px, calc(100% - 40px));
-      background: #fff;
-      border-radius: 10px;
-      padding: 18px 18px 16px;
-      box-shadow: 0 10px 35px rgba(0,0,0,0.25);
-      text-align: left;
-    }
-    #passwordCard h2 {
-      margin: 0 0 10px 0;
-      font-size: 18px;
-    }
-    #passwordCard p {
-      margin: 0 0 12px 0;
-      font-size: 14px;
-      color: #444;
-      line-height: 1.35;
-    }
-    #passwordRow {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-    }
-    #passwordInput {
-      flex: 1;
-      padding: 10px 10px;
-      border: 1px solid #aaa;
-      border-radius: 6px;
-      font-size: 14px;
-    }
-    #passwordBtn {
-      padding: 10px 14px;
-      border: none;
-      background: #2d6cdf;
-      color: #fff;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 14px;
-      white-space: nowrap;
-    }
-    #passwordBtn:hover { filter: brightness(0.95); }
-    #passwordError {
-      margin-top: 10px;
-      font-size: 13px;
-      color: #b00020;
-      display: none;
-    }
-
-    /* TŘÍDICÍ „PARKOVIŠTĚ“ – TŘI BOXY */
-    #statements {
-      display: flex;
-      flex-direction: row;
-      gap: 12px;
-      justify-content: space-between;
-      margin-top: 10px;
-      padding: 10px;
-      border-radius: 8px;
-      background: #ffffff;
-      box-shadow: 0 0 6px rgba(0,0,0,0.05);
-      box-sizing: border-box;
-      width: 100%;
-    }
-
-    .bucket {
-      flex: 1;
-      min-width: 0;
-      min-height: 80px;
-      border-radius: 6px;
-      border: 1px dashed #bbb;
-      padding: 6px;
-      background: #fafafa;
-      display: flex;
-      flex-direction: column;
-      align-items: stretch;
-      box-sizing: border-box;
-    }
-
-    .bucket-title {
-      font-weight: bold;
-      font-size: 13px;
-      margin-bottom: 4px;
-      text-align: left;
-    }
-
-    .statement {
-      background: white;
-      border: 1px solid #ccc;
-      padding: 6px;
-      margin: 4px 0;
-      border-radius: 4px;
-      cursor: grab;
-      font-size: 12px;
-      text-align: left;
-      width: 100%;
-      box-sizing: border-box;
-      line-height: 1.25;
-      user-select: none;
-    }
-
-    /* GRID */
-    #gridWrapper {
-      overflow-x: auto;
-      margin-top: 20px;
-      padding-bottom: 10px;
-      width: 100%;
-    }
-
-    .grid {
-      display: inline-flex;
-      justify-content: flex-start;
-      width: max-content;
-    }
-
-    .column {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin: 0;
-    }
-
-    .col-header {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-end;
-      min-height: 64px;
-      margin-bottom: 0;
-      padding: 0 2px;
-      box-sizing: border-box;
-    }
-
-    .column-label {
-      font-weight: bold;
-      margin-top: 2px;
-    }
-
-    .col-desc {
-      font-size: 11px;
-      text-align: center;
-      max-width: 150px;
-      line-height: 1.2;
-      min-height: 26px;
-    }
-
-    .slot {
-      width: 210px;  /* větší, aby se do nich vešly celé výroky */
-      min-height: 92px;
-      border: 1px solid #aaa;
-      margin: 0;
-      border-radius: 0;
-      font-size: 11px;
-      overflow: hidden;
-      display: flex;
-      align-items: stretch;
-      justify-content: stretch;
-      text-align: left;
-      padding: 4px;
-      box-sizing: border-box;
-    }
-
-    .slot .statement {
-      margin: 0;
-      width: 100%;
-      border-radius: 3px;
-    }
-
-    .empha {
-      color: #1A936F;
-      text-align: center;
-      font-size: 20px;
-      margin: 18px 0 10px;
-    }
-
-    #submitBtn {
-      margin-top: 10px;
-      padding: 10px 20px;
-      border: none;
-      background: #4CAF50;
-      color: white;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 15px;
-    }
-    #submitBtn:hover { background: #45a049; }
-    #submitBtn:disabled { opacity: 0.6; cursor: default; }
-
-    #opportunities {
-      width: 100%;
-      min-height: 100px;
-      box-sizing: border-box;
-      padding: 8px;
-      font-size: 13px;
-      border-radius: 4px;
-      border: 1px solid #aaa;
-      resize: vertical;
-    }
-  </style>
-</head>
-
-<body>
-  <!-- Heslový overlay -->
-  <div id="passwordOverlay">
-    <div id="passwordCard">
-      <h2>Přístup chráněn heslem</h2>
-      <p>Zadejte prosím heslo pro pokračování.</p>
-      <div id="passwordRow">
-        <input id="passwordInput" type="password" placeholder="Heslo" autocomplete="off" />
-        <button id="passwordBtn" type="button">Potvrdit</button>
-      </div>
-      <div id="passwordError">Nesprávné heslo. Zkuste to prosím znovu.</div>
-    </div>
-  </div>
-
-  <div id="main">
-    <h1>Q-sort: Bariéry práce se scénáři</h1>
-
-    <div id="participantRow">
-      <label for="participantId">ID účastníka (např. P01):</label>
-      <input type="text" id="participantId" placeholder="P01">
-    </div>
-
-    <!-- 1) Q-TŘÍDĚNÍ -->
-    <div class="section" id="section-qsort">
-      <h2>1) Q-třídění</h2>
-
-      <p>
-        V následujícím bloku můžete výroky předběžně roztřídit do tří skupin
-        (spíše nesouhlasím, spíše neutrální, spíše souhlasím). Poté prosím
-        umístěte všechny výroky do mřížky níže podle míry souhlasu,
-        od nejméně po nejvíce souhlasné.
-      </p>
-
-      <h3 class="empha">Za klíčové bariéry pro využití scénářů pro rozhodování na našem pracovišti považuji zejména...</h3>
-
-      <div id="statements">
-        <div class="bucket" id="bucket1">
-          <div class="bucket-title">Spíše nesouhlasím</div>
-        </div>
-        <div class="bucket" id="bucket2">
-          <div class="bucket-title">Spíše neutrální</div>
-        </div>
-        <div class="bucket" id="bucket3">
-          <div class="bucket-title">Spíše souhlasím</div>
-        </div>
-      </div>
-
-      <div id="gridWrapper">
-        <div class="grid" id="qgrid"></div>
-      </div>
-    </div>
-
-    <!-- 2) PŘÍLEŽITOSTI -->
-    <div class="section" id="section-opportunities">
-      <h2>2) Příležitosti</h2>
-      <p>
-        Ve zkratce prosím popište, jaké vidíte příležitosti k překonání výše diskutovaných bariér
-        ve svém působišti nebo kontextu:
-      </p>
-      <textarea id="opportunities" placeholder="Vaše odpověď (nepovinné, ale vítané)..."></textarea>
-    </div>
-
-    <div style="text-align: center; margin-bottom: 30px;">
-      <button id="submitBtn" onclick="submitData()">Odeslat můj Q-sort</button>
-    </div>
-  </div>
-
-  <script>
-    // URL Apps Script webové aplikace – ponechávám z poslední verze
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxQ4UMNSMGjfUM8EJBA1SGlvakxk_RKEzxEopXB2BJ6a_KLUQ1g4Se7jd5VB0_nyyMW/exec";
-
-    // === HESLO ===
-    const PAGE_PASSWORD = "chko";
-
-    // 31 výroků (Q1–Q31)
-    const statements = [
-      "Q1: K efektivní práci se scénáři by byla potřeba meziresortní spolupráce, která mi ale v praxi přijde složitá.",
-      "Q2: K využití scénářů bychom potřebovali kompenzovat nedostatečné interní kapacity spoluprací s externími odborníky.",
-      "Q3: K využívání scénářů by byla vhodná externí podpora širší (i neformální) sítě scénářových specialistů spolupracujících napříč různými institucemi i resorty.",
-      "Q4: Komunikace kolem scénářů bývá matoucí (buď příliš povrchní nebo naopak technická) a to snižuje mou důvěru vůči tomuto nástroji.",
-      "Q5: Kvalitativní scénáře bez \"čísel\" (tj. bez kvantifikace údajů) jsou pro naši praxi být málo přesvědčivé.",
-      "Q6: Mou důvěru a motivaci k využití scénářů by snížilo, kdybych nebyl/a jakožto uživatel/ka zapojen/a už do procesu tvorby scénářů.",
-      "Q7: Na našem pracovišti potřebujeme trochu jiný typ informací a výstupů, než které nabízí využití scénářů.",
-      "Q8: Naše práce musí reflektovat různorodé cíle, potřeby a zájmy, proto by bylo těžké shodnout se např. na zadání nebo účelu scénářů.",
-      "Q9: Nemáme dostatek podrobných informací o tom, jak přesně scénáře fungují nebo v čem by mohly být konkrétně nám užitečné.",
-      "Q10: Nemáme kapacitu (zejména časovou a organizační), kterou bychom mohli pro práci se scénáří využít.",
-      "Q11: Netradiční metody a nástroje nebo i příliš transformativní cíle některých scénářů mohou být v naší praxi těžko uplatnitelné.",
-      "Q12: Plánování a rozhodování v naší praxi má svá procesní specifika, kvůli kterým mi přijde zapojení scénářů do naší praxe těžko představitelné.",
-      "Q13: Pro efektivní využití scénářů (např. jejich tvorbu nebo simulační modelování) nemáme dostatek finančních zdrojů.",
-      "Q14: Pro podobné plánovací přístupy chybí politická podpora. Scénáře mohou generovat návrhy na opatření, jejichž implementace bude politicky neprosaditelná.",
-      "Q15: Pro rozhodování bychom potřebovali znát u scénářů i pravděpodobnosti různých variant vývoje, bez kterých je pro nás tento nástroj špatně použitelný.",
-      "Q16: Problém vidím v nedostatku osobní motivace, která by byla k zapojení scénářů do naší praxe třeba.",
-      "Q17: Scénáře mohou zviditelnit případné konflikty, které tato instituce nemusí být připravena řešit.",
-      "Q18: Scénáře nebo jejich modelování nedokáží uchopit některé faktory klíčové pro uplatnění plánů a strategií (například hodnoty, chování, lidský faktor).",
-      "Q19: Scénáře nebo jejich modelování nejsou dostatečně flexibilní a přizpůsobivé, aby reagovaly na změny priorit, problémů, otázek nebo i dat v naší práci.",
-      "Q20: Scénáře někdy evokují (a zdá se, že i prosazují) některé politické postoje nebo hodnoty, se kterými ne vždy souzním. Snižuje to mou důvěru.",
-      "Q21: Scénáře nevnímám jako dostatečně objektivní, transparentní a kredibilní nástroj.",
-      "Q22: Scénáře pracují spíše s delšími časovými horizonty, my ale potřebujeme dělat spíše krátkodobější rozhodnutí.",
-      "Q23: Scénáře vnímám spíš jako jednorázový produkt neuplatnitelný pro dlouhodobé využití.",
-      "Q24: Tvorba scénářů a jejich modelování by měly probíhat uvnitř instituce, jinak nebudou výstupy dostatečně důvěryhodné.",
-      "Q25: V naší praxi není dostatečný prostor pro experimenty s formáty, které by vyžadovaly dlouhodobý proces zavádění a (postupného) přizpůsobení našim potřebám a cílům.",
-      "Q26: V rámci instituce nám chybí dostatečné kompetence pro práci se scénáři.",
-      "Q27: Vnímám práci se scénáři jako spíše akademickou a nedostatečně transparentní. I modelování scénářů může být trochu „černá skříňka“ bez transparence potřebné ve veřejné správě.",
-      "Q28: Využití scénářů je těžko slučitelné s reálnými plánovacími a politickými cykly, ve kterých fungujeme.",
-      "Q29: Využití scénářů v naší praxi by pomohlo, kdyby bylo přímo ukotvené v konkrétních plánovacích a rozhodovacích procesech.",
-      "Q30: Využití více scénářů různých budoucností je pro naši praxi spíše matoucí, potřebujeme pracovat s jednou vizí cílového stavu.",
-      "Q31: Za překážku využití scénářů v naší praxi považuji nedostatek vhodných dat."
-    ];
-
-    // === 7 sloupců, 31 slotů ===
-    // škála: -3 -2 -1 0 +1 +2 +3
-    // distribuce: 2,4,6,7,6,4,2 = 31
-    const distribution = [-3, -2, -1, 0, 1, 2, 3];
-    const slotsPerColumn = { "-3":2, "-2":4, "-1":6, "0":7, "1":6, "2":4, "3":2 };
-
-    let submitting = false;
-
-    window.addEventListener('DOMContentLoaded', () => {
-      setupPasswordGate();
+    btn.addEventListener('click', tryUnlock);
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') tryUnlock();
     });
 
-    function setupPasswordGate() {
-      const overlay = document.getElementById('passwordOverlay');
-      const main = document.getElementById('main');
-      const input = document.getElementById('passwordInput');
-      const btn = document.getElementById('passwordBtn');
-      const err = document.getElementById('passwordError');
+    setTimeout(() => input.focus(), 50);
+  }
 
-      function tryUnlock() {
-        const v = (input.value || "").trim();
-        if (v === PAGE_PASSWORD) {
-          overlay.style.display = 'none';
-          main.style.display = 'block';
-          err.style.display = 'none';
+  function buildGrid() {
+    const grid = document.getElementById('qgrid');
+    grid.innerHTML = "";
 
-          buildGrid();
-          renderStatements();
-          enablePoolDrop();
-          enableAutoScrollOnDrag();
+    distribution.forEach(val => {
+      const col = document.createElement('div');
+      col.className = 'column';
+
+      const header = document.createElement('div');
+      header.className = 'col-header';
+
+      const desc = document.createElement('div');
+      desc.className = 'col-desc';
+      if (val === -3) desc.textContent = 'Nejméně odpovídá tomu, co si myslím';
+      else if (val === 0) desc.textContent = 'Neutrální';
+      else if (val === 3) desc.textContent = 'Nejvíce odpovídá tomu, co si myslím';
+      else desc.textContent = '';
+
+      const label = document.createElement('div');
+      label.className = 'column-label';
+      label.textContent = (val > 0 ? "+" + val : String(val));
+
+      header.appendChild(desc);
+      header.appendChild(label);
+      col.appendChild(header);
+
+      for (let i = 0; i < slotsPerColumn[String(val)]; i++) {
+        const slot = document.createElement('div');
+        slot.className = 'slot';
+        slot.dataset.value = val;
+        slot.ondrop = drop;
+        slot.ondragover = allowDrop;
+
+        // barvy: červená vlevo, zelená vpravo, střed bílý; sytější ke krajům
+        if (val === 0) {
+          slot.style.backgroundColor = '#ffffff';
+        } else if (val < 0) {
+          const alpha = 0.24 + 0.12 * Math.abs(val);
+          slot.style.backgroundColor = `rgba(247, 177, 171, ${alpha})`;
         } else {
-          err.style.display = 'block';
-          input.focus();
-          input.select();
+          const alpha = 0.24 + 0.12 * Math.abs(val);
+          slot.style.backgroundColor = `rgba(136, 212, 152, ${alpha})`;
         }
+
+        col.appendChild(slot);
       }
 
-      btn.addEventListener('click', tryUnlock);
-      input.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') tryUnlock();
-      });
+      grid.appendChild(col);
+    });
+  }
 
-      setTimeout(() => input.focus(), 50);
-    }
+  function renderStatements() {
+    const bucket1 = document.getElementById('bucket1');
+    bucket1.querySelectorAll('.statement').forEach(el => el.remove());
 
-    function buildGrid() {
-      const grid = document.getElementById('qgrid');
-      grid.innerHTML = "";
+    statements.forEach((txt, i) => {
+      const div = document.createElement('div');
+      div.className = 'statement';
+      div.textContent = txt;
+      div.draggable = true;
+      div.id = 's' + i;
+      div.ondragstart = drag;
+      bucket1.appendChild(div);
+    });
+  }
 
-      distribution.forEach(val => {
-        const col = document.createElement('div');
-        col.className = 'column';
-
-        const header = document.createElement('div');
-        header.className = 'col-header';
-
-        const desc = document.createElement('div');
-        desc.className = 'col-desc';
-        if (val === -3) {
-          desc.textContent = 'Nejméně odpovídá tomu, co si myslím';
-        } else if (val === 0) {
-          desc.textContent = 'Neutrální';
-        } else if (val === 3) {
-          desc.textContent = 'Nejvíce odpovídá tomu, co si myslím';
-        } else {
-          desc.textContent = '';
+  function enablePoolDrop() {
+    const buckets = document.querySelectorAll('.bucket');
+    buckets.forEach(bucket => {
+      bucket.addEventListener('dragover', allowDrop);
+      bucket.addEventListener('drop', (ev) => {
+        ev.preventDefault();
+        const id = ev.dataTransfer.getData("text");
+        if (!id) return;
+        const el = document.getElementById(id);
+        if (el && el.classList.contains('statement')) {
+          bucket.appendChild(el);
         }
-
-        const label = document.createElement('div');
-        label.className = 'column-label';
-        label.textContent = (val > 0 ? "+" + val : String(val));
-
-        header.appendChild(desc);
-        header.appendChild(label);
-        col.appendChild(header);
-
-        for (let i = 0; i < slotsPerColumn[String(val)]; i++) {
-          const slot = document.createElement('div');
-          slot.className = 'slot';
-          slot.dataset.value = val;
-          slot.ondrop = drop;
-          slot.ondragover = allowDrop;
-
-          // barvy: červená vlevo, zelená vpravo, střed bílý; sytější ke krajům
-          if (val === 0) {
-            slot.style.backgroundColor = '#ffffff';
-          } else if (val < 0) {
-            const alpha = 0.24 + 0.12 * Math.abs(val);
-            slot.style.backgroundColor = `rgba(247, 177, 171, ${alpha})`;
-          } else {
-            const alpha = 0.24 + 0.12 * Math.abs(val);
-            slot.style.backgroundColor = `rgba(136, 212, 152, ${alpha})`;
-          }
-
-          col.appendChild(slot);
-        }
-
-        grid.appendChild(col);
       });
+    });
+  }
+
+  function allowDrop(ev){ ev.preventDefault(); }
+  function drag(ev){ ev.dataTransfer.setData("text", ev.target.id); }
+
+  function drop(ev){
+    ev.preventDefault();
+    const data = ev.dataTransfer.getData("text");
+    const card = document.getElementById(data);
+    if (ev.target.classList.contains('slot') && ev.target.children.length === 0 && card) {
+      ev.target.appendChild(card);
+    }
+  }
+
+  // Auto-scroll při dragování směrem dolů/nahoru
+  function enableAutoScrollOnDrag() {
+    document.addEventListener('dragover', function(e) {
+      // Pozor: u dragover dáváme preventDefault, aby drop fungoval
+      e.preventDefault();
+      const margin = 90;
+      const y = e.clientY;
+      const h = window.innerHeight;
+
+      if (y > h - margin) {
+        window.scrollBy({ top: 24, left: 0, behavior: 'smooth' });
+      } else if (y < margin) {
+        window.scrollBy({ top: -24, left: 0, behavior: 'smooth' });
+      }
+    });
+  }
+
+  function submitData(){
+    if (submitting) {
+      alert("Váš Q-sort už byl odeslán.");
+      return;
     }
 
-    function renderStatements() {
-      const bucket1 = document.getElementById('bucket1');
-      bucket1.querySelectorAll('.statement').forEach(el => el.remove());
-
-      statements.forEach((txt, i) => {
-        const div = document.createElement('div');
-        div.className = 'statement';
-        div.textContent = txt;
-        div.draggable = true;
-        div.id = 's' + i;
-        div.ondragstart = drag;
-        bucket1.appendChild(div);
-      });
+    const participantId = document.getElementById('participantId').value.trim();
+    if (!participantId) {
+      alert("Zadejte prosím ID účastníka (např. P01).");
+      return;
     }
 
-    function enablePoolDrop() {
-      const buckets = document.querySelectorAll('.bucket');
-      buckets.forEach(bucket => {
-        bucket.addEventListener('dragover', allowDrop);
-        bucket.addEventListener('drop', (ev) => {
-          ev.preventDefault();
-          const id = ev.dataTransfer.getData("text");
-          if (!id) return;
-          const el = document.getElementById(id);
-          if (el && el.classList.contains('statement')) {
-            bucket.appendChild(el);
-          }
+    const results = [];
+    document.querySelectorAll('.slot').forEach((slot, index) => {
+      if (slot.children.length > 0) {
+        const card = slot.children[0];
+        results.push({
+          slotIndex: index,
+          score: slot.dataset.value,
+          statementId: card.id,
+          statement: card.textContent
         });
-      });
-    }
-
-    function allowDrop(ev){ ev.preventDefault(); }
-    function drag(ev){ ev.dataTransfer.setData("text", ev.target.id); }
-
-    function drop(ev){
-      ev.preventDefault();
-      const data = ev.dataTransfer.getData("text");
-      const card = document.getElementById(data);
-      if (ev.target.classList.contains('slot') && ev.target.children.length === 0 && card) {
-        ev.target.appendChild(card);
       }
+    });
+
+    if (results.length < statements.length) {
+      alert("Prosím rozmístěte všech 31 výroků do mřížky, než odešlete odpovědi.");
+      return;
     }
 
-    function enableAutoScrollOnDrag() {
-      document.addEventListener('dragover', function(e) {
-        e.preventDefault();
+    const opportunitiesEl = document.getElementById('opportunities');
+    const opportunities = opportunitiesEl ? opportunitiesEl.value.trim() : "";
+
+    const payload = {
+      participantId,
+      opportunities,
+      results
+    };
+
+    const btn = document.getElementById('submitBtn');
+    submitting = true;
+    btn.disabled = true;
+
+    fetch(SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(payload)
+    }).then(()=>{
+      btn.textContent = "Q-sort byl odeslán";
+      alert("Děkujeme za úspěšné Q-řazení!");
+    }).catch(err=>{
+      submitting = false;
+      btn.disabled = false;
+      alert("Při odesílání došlo k chybě: " + err);
+    });
+  }
+</script>
